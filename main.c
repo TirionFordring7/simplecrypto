@@ -1,3 +1,8 @@
+/*!
+ * \file main.c
+ * \brief Основной и единственный файл.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,22 +13,22 @@
 #define KEY_LENGTH 32
 #define IV_LENGTH 16
 
-/**
- * @brief Выводит сообщение о способе использования программы.
+/*!
+ * \brief Выводит сообщение о способе использования программы.
  *
- * @param prog_name Имя исполняемого файла программы.
+ * \param prog_name Имя исполняемого файла программы.
  */
 void print_usage(const char *prog_name) {
     printf("Usage: %s -e|-d -i <input file> -o <output file> -p <password>\n", prog_name);
 }
 
-/**
- * @brief Вычисляет ключ и вектор инициализации на основе пароля. Используется SHA512, иначе длинна ключа+вектора инициализации вылезет за границу массива и в расшиврованном сообщении будет мусор.
+/*!
+ * \brief Вычисляет ключ и вектор инициализации на основе пароля. Используется SHA512, иначе длинна ключа+вектора инициализации вылезет за границу массива и в расшиврованном сообщении будет мусор.
  *
- * @param password Пароль для выработки ключа.
- * @param key Буфер для хранения ключа.
- * @param iv Буфер для хранения вектора инициализации.
- * @return Возвращает 0 при успешном выполнении.
+ * \param password Пароль для выработки ключа.
+ * \param key Буфер для хранения ключа.
+ * \param iv Буфер для хранения вектора инициализации.
+ * \return Возвращает 0 при успешном выполнении.
  */
 int derive_key_iv(const char *password, unsigned char *key, unsigned char *iv) {
     unsigned char hash[SHA512_DIGEST_LENGTH];
@@ -33,13 +38,13 @@ int derive_key_iv(const char *password, unsigned char *key, unsigned char *iv) {
     return 0;
 }
 
-/**
- * @brief Шифрует входной файл и записывает данные в выходной файл.
+/*!
+ * \brief Шифрует входной файл и записывает данные в выходной файл.
  *
- * @param in_filename Путь к входному файлу.
- * @param out_filename Путь к выходному файлу.
- * @param password Пароль для шифрования.
- * @return Возвращает 0 при успешном шифровании, иначе 1.
+ * \param in_filename Путь к входному файлу.
+ * \param out_filename Путь к выходному файлу.
+ * \param password Пароль для шифрования.
+ * \return Возвращает 0 при успешном шифровании, иначе 1.
  */
 int encrypt_file(const char *in_filename, const char *out_filename, const char *password) {
     FILE *in_file = fopen(in_filename, "rb");
@@ -106,13 +111,13 @@ int encrypt_file(const char *in_filename, const char *out_filename, const char *
     return 0;
 }
 
-/**
- * @brief Расшифровывает входной файл и записывает данные в выходной файл.
+/*!
+ * \brief Расшифровывает входной файл и записывает данные в выходной файл.
  *
- * @param in_filename Путь к зашифрованному файлу.
- * @param out_filename Путь к выходному файлу.
- * @param password Пароль для расшифровки.
- * @return Возвращает 0 при успешном расшифровании, иначе 1.
+ * \param in_filename Путь к зашифрованному файлу.
+ * \param out_filename Путь к выходному файлу.
+ * \param password Пароль для расшифровки.
+ * \return Возвращает 0 при успешном расшифровании, иначе 1.
  */
 int decrypt_file(const char *in_filename, const char *out_filename, const char *password) {
     FILE *in_file = fopen(in_filename, "rb");
@@ -178,12 +183,12 @@ int decrypt_file(const char *in_filename, const char *out_filename, const char *
     return 0;
 }
 
-/**
- * @brief Главная функция программы, обрабатывает аргументы командной строки и выполняет шифрование или расшифровку.
+/*!
+ * \brief Главная функция программы, обрабатывает аргументы командной строки и выполняет шифрование или расшифровку.
  *
- * @param argc Количество аргументов командной строки.
- * @param argv Массив строк аргументов командной строки.
- * @return Возвращает 0 при успешном выполнении, иначе 1.
+ * \param argc Количество аргументов командной строки.
+ * \param argv Массив строк аргументов командной строки.
+ * \return Возвращает 0 при успешном выполнении, иначе 1.
  */
 int main(int argc, char *argv[]) {
     int opt;
