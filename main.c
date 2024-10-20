@@ -14,7 +14,7 @@
  * @param prog_name Имя исполняемого файла программы.
  */
 void print_usage(const char *prog_name) {
-    printf("Использование: %s -e|-d -i <входной файл> -o <выходной файл> -p <пароль>\n", prog_name);
+    printf("Usage: %s -e|-d -i <input file> -o <output file> -p <password>\n", prog_name);
 }
 
 /**
@@ -44,13 +44,13 @@ int derive_key_iv(const char *password, unsigned char *key, unsigned char *iv) {
 int encrypt_file(const char *in_filename, const char *out_filename, const char *password) {
     FILE *in_file = fopen(in_filename, "rb");
     if (!in_file) {
-        printf("Не удалось открыть входной файл\n");
+        printf("Failed to open input file\n");
         return 1;
     }
 
     FILE *out_file = fopen(out_filename, "wb");
     if (!out_file) {
-        printf("Не удалось открыть выходной файл\n");
+        printf("Failed to open output file\n");
         fclose(in_file);
         return 1;
     }
@@ -61,14 +61,14 @@ int encrypt_file(const char *in_filename, const char *out_filename, const char *
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     if (!ctx) {
-        printf("Не удалось создать контекст шифрования\n");
+        printf("Failed to create encryption context\n");
         fclose(in_file);
         fclose(out_file);
         return 1;
     }
 
     if (EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv) != 1) {
-        printf("Ошибка инициализации шифрования\n");
+        printf("Encryption initialization failed\n");
         EVP_CIPHER_CTX_free(ctx);
         fclose(in_file);
         fclose(out_file);
@@ -83,7 +83,7 @@ int encrypt_file(const char *in_filename, const char *out_filename, const char *
 
     while ((out_len = fread(buffer, 1, sizeof(buffer), in_file)) > 0) {
         if (EVP_EncryptUpdate(ctx, out_buffer, &out_len, buffer, out_len) != 1) {
-            printf("Ошибка шифрования\n");
+            printf("Encryption error\n");
             EVP_CIPHER_CTX_free(ctx);
             fclose(in_file);
             fclose(out_file);
@@ -93,7 +93,7 @@ int encrypt_file(const char *in_filename, const char *out_filename, const char *
     }
 
     if (EVP_EncryptFinal(ctx, out_buffer, &out_len) != 1) {
-        printf("Ошибка завершения шифрования\n");
+        printf("Final encryption step failed\n");
         fclose(in_file);
         fclose(out_file);
         return 1;
@@ -117,13 +117,13 @@ int encrypt_file(const char *in_filename, const char *out_filename, const char *
 int decrypt_file(const char *in_filename, const char *out_filename, const char *password) {
     FILE *in_file = fopen(in_filename, "rb");
     if (!in_file) {
-        printf("Не удалось открыть входной файл\n");
+        printf("Failed to open input file\n");
         return 1;
     }
 
     FILE *out_file = fopen(out_filename, "wb");
     if (!out_file) {
-        printf("Не удалось открыть выходной файл\n");
+        printf("Failed to open output file\n");
         fclose(in_file);
         return 1;
     }
@@ -134,14 +134,14 @@ int decrypt_file(const char *in_filename, const char *out_filename, const char *
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     if (!ctx) {
-        printf("Не удалось создать контекст расшифровки\n");
+        printf("Failed to create decryption context\n");
         fclose(in_file);
         fclose(out_file);
         return 1;
     }
 
     if (EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv) != 1) {
-        printf("Ошибка инициализации расшифровки\n");
+        printf("Decryption initialization failed\n");
         EVP_CIPHER_CTX_free(ctx);
         fclose(in_file);
         fclose(out_file);
@@ -156,7 +156,7 @@ int decrypt_file(const char *in_filename, const char *out_filename, const char *
 
     while ((out_len = fread(buffer, 1, 4096, in_file)) > 0) {
         if (EVP_DecryptUpdate(ctx, out_buffer, &out_len, buffer, out_len) != 1) {
-            printf("Ошибка расшифровки\n");
+            printf("Decryption error\n");
             EVP_CIPHER_CTX_free(ctx);
             fclose(in_file);
             fclose(out_file);
@@ -166,7 +166,7 @@ int decrypt_file(const char *in_filename, const char *out_filename, const char *
     }
 
     if (EVP_DecryptFinal(ctx, out_buffer, &out_len) != 1) {
-        printf("Ошибка завершения расшифровки\n");
+        printf("Final decryption step failed\n");
         fclose(in_file);
         fclose(out_file);
         return 1;
